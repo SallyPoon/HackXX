@@ -84,7 +84,7 @@ void moveLeft(){
         delay(500); 
         leftMotor1.setSpeed(00); rightMotor1.setSpeed(00);
         leftMotor2.setSpeed(00); rightMotor2.setSpeed(00);
-        delay(1000);
+        delay(500);
 }
 
 void moveRight(){  
@@ -95,7 +95,7 @@ void moveRight(){
         delay(500);      
         leftMotor1.setSpeed(00); rightMotor1.setSpeed(00);
         leftMotor2.setSpeed(00); rightMotor2.setSpeed(00);
-        delay(1000);
+        delay(500);
 }
 
 void moveServoLeft(){
