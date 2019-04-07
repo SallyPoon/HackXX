@@ -30,7 +30,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-   unsigned int data[3];
+   int data[3];
 
 //  grab_sig = digitalRead(grab);
 //  hold_sig = digitalRead(hold);
@@ -52,9 +52,18 @@ void loop() {
     data[0] = Wire.read();
     data[1] = Wire.read();
     data[2] = Wire.read();
+    /*
+    Serial.print(data[0]);
+    Serial.print(",");
+    Serial.print(data[1]);
+    Serial.print(",");
+    Serial.print(data[2]);
+    Serial.println("");
+    */
   }  
 
   // Convert the data to 6-bits
+  
   int xAccl = data[0] & 0x3F;
   if(xAccl > 31)
   {
@@ -89,11 +98,20 @@ void loop() {
   
     
   // Output data to serial monitor
-  Serial.print(xAccl);
-  Serial.print(",");
-  Serial.print(yAccl);
-  Serial.print(",");
-  Serial.print(zAccl);
-  Serial.println("");
+
+  if (xAccl >= 15 || xAccl <= -15 || yAccl >= 15 || yAccl <= -15){
+    Serial.print(xAccl);
+    Serial.print(",");
+    Serial.print(yAccl);
+    Serial.print(",");
+    Serial.print(zAccl);
+    Serial.println("");
+    /*
+    int flushNum = 0;
+    while(Wire.available() > 0 && flushNum < 21) {
+      char t = Serial.read();
+      flushNum += 1;
+    }  */
+  }
   //delay(1000); 
 }
