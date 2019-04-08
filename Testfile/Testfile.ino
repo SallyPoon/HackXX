@@ -1,11 +1,6 @@
 #include <Wire.h>
-//#include <Servo.h>
 
 #define Addr 0x4C
-//Servo myservo;
-//int grab = 2;
-//int hold = 3;
-//int pos = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -21,19 +16,12 @@ void setup() {
   Wire.write(0x07);
   Wire.endTransmission();
   delay(300);
-  
-//  myservo.attach(1);
-//  pinMode(grab,INPUT);
-//  pinMode(hold,INPUT);
 
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-   int data[3];
-
-//  grab_sig = digitalRead(grab);
-//  hold_sig = digitalRead(hold);
+   unsigned int data[3];
   
   // Start I2C Transmission
   Wire.beginTransmission(Addr);
@@ -52,18 +40,9 @@ void loop() {
     data[0] = Wire.read();
     data[1] = Wire.read();
     data[2] = Wire.read();
-    /*
-    Serial.print(data[0]);
-    Serial.print(",");
-    Serial.print(data[1]);
-    Serial.print(",");
-    Serial.print(data[2]);
-    Serial.println("");
-    */
   }  
 
   // Convert the data to 6-bits
-  
   int xAccl = data[0] & 0x3F;
   if(xAccl > 31)
   {
@@ -79,39 +58,13 @@ void loop() {
   {
     zAccl -= 64;
   }
-  
-//  if (grab_sig == HIGH) {
-//    for (pos = 0; pos <= 45; pos += 1) { // goes from 0 degrees to 180 degrees
-//      // in steps of 1 degree
-//      myservo.write(pos);              // tell servo to go to position in variable 'pos'
-//      delay(15);                       // waits 15ms for the servo to reach the position
-//  }
-//    digitalWrite(grab_sig,LOW);
-//  }
-//  if (hold_sig == HIGH) { {
-//    for (pos = 45; pos >= 90; pos -= 1) { // goes from 180 degrees to 0 degrees
-//      myservo.write(pos);              // tell servo to go to position in variable 'pos'
-//      delay(15);                       // waits 15ms for the servo to reach the position
-//    }
-//    digitalWrite(hold_sig, LOW);
-//  }
-  
     
   // Output data to serial monitor
-
-  if (xAccl >= 15 || xAccl <= -15 || yAccl >= 15 || yAccl <= -15){
-    Serial.print(xAccl);
-    Serial.print(",");
-    Serial.print(yAccl);
-    Serial.print(",");
-    Serial.print(zAccl);
-    Serial.println("");
-    /*
-    int flushNum = 0;
-    while(Wire.available() > 0 && flushNum < 21) {
-      char t = Serial.read();
-      flushNum += 1;
-    }  */
-  }
-  //delay(1000); 
+  Serial.print(xAccl);
+  Serial.print(",");
+  Serial.print(yAccl);
+  Serial.print(",");
+  Serial.print(zAccl);
+  Serial.println("");
+  delay(1000); 
 }

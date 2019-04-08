@@ -1,16 +1,11 @@
 import serial
 import time
-import math
 
 BAUD_RATE = 115200
 PORT = "/dev/tty.14-DevB"
 ACCEL_PORT = "/dev/cu.usbmodem14601"
 
 TIMEOUT = 0.5
-
-PAUSE = False
-
-ANGLE = 90
 
 # Bytes!
 FORWARD = b"w"
@@ -44,45 +39,61 @@ def servo_right():
     bt.write(SERVO_RIGHT)
     time.sleep(TIMEOUT)
 
-def pause():
-    PAUSE = !PAUSE
-    time.sleep(TIMEOUT);
-
+def flush():
+    for _ in range(20):
+        accelerometer.reset_input_buffer()
+        time.sleep(5/20)
 
 # Setup serial port with path to port
-#bt = serial.Serial(PORT, 115200, timeout=5)
+bt = serial.Serial(PORT, 115200, timeout=5)
 accelerometer = serial.Serial(ACCEL_PORT, 115200, timeout=5)
-#bt.flushInput()
+bt.flushInput()
 accelerometer.flushInput()
+x_axis_holder = 0
+y_axis_holder = 0
 
+accelerometer.readline()
 while True:
-    reader = accelerometer.readline();
-    print(reader)
-    coords = reader.decode("utf-8")
-    coords = coords.strip()
-    result = [coords.strip() for coords in coords.split(",")]
-    #print(result)
+    coords = accelerometer.readline()
+    print(coords.decode("utf-8"))
     try:
-        results = [int(x) for x in result]
+        result = [int(coord.strip()) for coord in coords.decode("utf-8").split(",")]
     except:
-        continue;
-    print(results)
-    x_axis = results[0]
-    y_axis = results[1]
-    z_axis = results[2]
-    # if z_axis >= 17:
-    #     PAUSE = not PAUSE
-    #     time.sleep(TIMEOUT);
-    # if PAUSE:
-    #     if y_axis >= 17 and z_axis <= 17:
-    #         forward()
-    #         print("forward " + str(y_axis))
-    #     if y_axis <= -17 and z_axis >= -17:
-    #         backwards()
-    #         print("backward " + str(y_axis))
-    #     if x_axis >= 17:
-    #         right()
-    #         print("right " + str(x_axis))
-    #     if x_axis <= -17:
-    #         left()
-    #         print("left " + str(x_axis))
+        continue
+    if len(result) == 2 or len(result) == 3:
+        x_axis = result[0]
+        y_axis = result[1]
+    else:
+        continue
+
+    if abs(x_axis_holder - x_axis) < 20 and abs(y_axis_holder - y_axis) < 20:
+        continue
+    if y_axis  >= 15:
+        forward()
+        print(str(x_axis_holder) + ',' + str(y_axis_holder))
+        print("forward " + str(y_axis - y_axis_holder))
+        x_axis_holder = x_axis
+        y_axis_holder = y_axis
+        print(result)
+    elif y_axis < -15:
+        print(str(x_axis_holder) + ',' + str(y_axis_holder))
+        print("backward " + str(y_axis - y_axis_holder))
+        backwards()
+        x_axis_holder = x_axis
+        y_axis_holder = y_axis
+        print(result)
+    if (x_axis >= 15):
+        print(str(x_axis_holder) + ',' + str(y_axis_holder))
+        print("right " + str(x_axis_holder - x_axis))
+        right()
+        x_axis_holder = x_axis
+        y_axis_holder = y_axis
+        print(result)
+        #flush()
+    elif (x_axis < -15):
+        print(str(x_axis_holder) + ',' + str(y_axis_holder))
+        print("left " + str(x_axis_holder - x_axis))
+        left()
+        x_axis_holder = x_axis
+        y_axis_holder = y_axis
+        print(result)

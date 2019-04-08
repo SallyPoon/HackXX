@@ -24,34 +24,31 @@ void setup() {
   delay(100);
 }
 
-void loop() { 
+void loop() {
   if (Serial.available() > 0) {
-     while (Serial.available() > 1) {
-      Serial.read();
-     }
-     // read the incoming byte:
-     char serialread = Serial.read();
-     unsigned char c = serialread & 0xff;
-    
-     if(c == 0x77){
-       moveForward();
-     }
-     else if(c == 0x73){
-       moveBackward();
-     }
-     else if(c == 0x61){
-       moveLeft();
-     }
-     else if(c == 0x64){
-       moveRight();
-     }
-     else if(c == 0x71){
-       moveServoLeft();
-     }
-     else if(c == 0x65){
-       moveServoRight();
-     }
-   }
+                // read the incoming byte:
+                char serialread = Serial.read();
+                unsigned char c = serialread & 0xff;
+                
+                if(c == 0x77){
+                  moveForward();
+                }
+                else if(c == 0x73){
+                  moveBackward();
+                }
+                else if(c == 0x61){
+                  moveLeft();
+                }
+                else if(c == 0x64){
+                  moveRight();
+                }
+                else if(c == 0x71){
+                  moveServoLeft();
+                }
+                else if(c == 0x65){
+                  moveServoRight();
+                }
+        }
 }
 void moveForward() {
         leftMotor1.run(0x01); rightMotor1.run(0x01);
@@ -84,7 +81,7 @@ void moveLeft(){
         delay(500); 
         leftMotor1.setSpeed(00); rightMotor1.setSpeed(00);
         leftMotor2.setSpeed(00); rightMotor2.setSpeed(00);
-        delay(500);
+        delay(1000);
 }
 
 void moveRight(){  
@@ -95,7 +92,7 @@ void moveRight(){
         delay(500);      
         leftMotor1.setSpeed(00); rightMotor1.setSpeed(00);
         leftMotor2.setSpeed(00); rightMotor2.setSpeed(00);
-        delay(500);
+        delay(1000);
 }
 
 void moveServoLeft(){
